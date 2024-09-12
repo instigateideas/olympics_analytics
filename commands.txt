@@ -1,0 +1,18 @@
+
+docker build -t dash_app:0.5 .
+docker run -dit -p 8050:8050 dash_app:0.5
+
+
+# Login to artifact registry
+gcloud auth print-access-token --impersonate-service-account my-custom-sa@terraform-431601.iam.gserviceaccount.com 
+docker login -u oauth2accesstoken -p "ya29.c.c0..." https://asia-south1-docker.pkg.dev
+
+# Create artifact repository
+gcloud artifacts repositories create explore-repo --location=asia-south1 --repository-format=docker 
+
+# Tag the image built in local
+docker tag dash_app:0.5 asia-south1-docker.pkg.dev/terraform-431601/explore-repo/olympics_app:0.5 
+
+# Push the Image to Artifact Repository
+docker push asia-south1-docker.pkg.dev/terraform-431601/explore-repo/olympics_app:0.5 
+
